@@ -42,7 +42,7 @@
 </head>
 <body class="bg-white dark:bg-[#0a0a0a] h-screen flex flex-col overflow-hidden text-gray-900 dark:text-gray-100">
 
-    <nav class="bg-white dark:bg-[#111] border-b dark:border-neutral-800 px-4 py-3 flex justify-between items-center z-50 shadow-sm">
+    <nav class="bg-white dark:bg-[#111] border-b dark:border-neutral-800 px-4 py-3 flex justify-between items-center z-50 shadow-sm h-[64px]">
         <div class="flex items-center gap-3">
             <button onclick="toggleSidebar()" class="p-2 hover:bg-gray-100 dark:hover:bg-neutral-800 rounded-lg transition">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
@@ -52,14 +52,10 @@
         </div>
         
         <div class="flex items-center gap-2 sm:gap-3">
-            <div class="flex bg-gray-100 dark:bg-neutral-800 p-1 rounded-xl text-[9px] sm:text-[10px] font-bold">
-                <button onclick="setTheme('light')" class="px-2 py-1 rounded-lg hover:bg-white dark:hover:bg-neutral-700 uppercase">Light</button>
-                <button onclick="setTheme('dark')" class="px-2 py-1 rounded-lg hover:bg-white dark:hover:bg-neutral-700 uppercase">Dark</button>
-            </div>
             <div id="auth-wrapper"><div class="g_id_signin" data-type="standard"></div></div>
-            <div id="user-profile" class="hidden flex items-center gap-2 sm:gap-3 pl-2 sm:pl-3 border-l dark:border-neutral-800">
-                <img id="user-pic" src="" class="w-7 h-7 sm:w-8 sm:h-8 rounded-full border dark:border-neutral-700 shadow-sm">
-                <button onclick="logout()" class="text-[9px] sm:text-[10px] text-red-500 font-bold uppercase hover:underline">Logout</button>
+            <div id="user-profile" class="hidden flex items-center gap-2 sm:gap-3 pl-2 border-l dark:border-neutral-800">
+                <img id="user-pic" src="" class="w-7 h-7 sm:w-8 sm:h-8 rounded-full border dark:border-neutral-700">
+                <button onclick="logout()" class="text-[9px] text-red-500 font-bold uppercase hover:underline">Logout</button>
             </div>
         </div>
     </nav>
@@ -68,12 +64,19 @@
         <div id="sidebar-backdrop" onclick="toggleSidebar()" class="fixed inset-0 bg-black/40 z-30 hidden lg:hidden backdrop-blur-[2px]"></div>
 
         <aside id="sidebar" class="fixed lg:relative inset-y-0 left-0 w-72 bg-gray-50 dark:bg-[#0f0f0f] border-r dark:border-neutral-800 flex flex-col sidebar-transition z-40 -translate-x-full lg:translate-x-0 pt-20 lg:pt-0 shadow-2xl lg:shadow-none">
-            <div class="p-4">
-                <button onclick="newChat()" class="w-full h-12 flex items-center justify-center gap-3 bg-black dark:bg-white text-white dark:text-black rounded-xl font-bold shadow-lg hover:opacity-90 transition active:scale-95 whitespace-nowrap overflow-hidden">
+            
+            <div class="p-4 mt-4 lg:mt-0 flex flex-col gap-4">
+                <div class="flex bg-gray-200 dark:bg-neutral-800 p-1 rounded-xl text-[10px] font-bold w-full">
+                    <button onclick="setTheme('light')" class="flex-1 py-2 rounded-lg hover:bg-white dark:hover:bg-neutral-700 uppercase">Light</button>
+                    <button onclick="setTheme('dark')" class="flex-1 py-2 rounded-lg hover:bg-white dark:hover:bg-neutral-700 uppercase">Dark</button>
+                </div>
+
+                <button onclick="newChat()" class="w-full h-12 flex items-center justify-center gap-3 bg-black dark:bg-white text-white dark:text-black rounded-xl font-bold shadow-lg hover:opacity-90 transition active:scale-95 whitespace-nowrap">
                     <span class="text-xl">+</span>
                     <span class="sidebar-text">New Chat</span>
                 </button>
             </div>
+            
             <div id="history-list" class="flex-1 overflow-y-auto p-3 space-y-2 chat-scroll"></div>
         </aside>
 
@@ -85,31 +88,30 @@
 
             <div id="chat-window" class="flex-1 overflow-y-auto p-4 sm:p-6 md:p-10 space-y-6 sm:space-y-8 chat-scroll">
                 <div id="welcome-screen" class="max-w-2xl mx-auto pt-10 sm:pt-20 text-center">
-                    <h3 class="text-xl font-bold mb-8">How can I help you today?</h3>
+                    <h3 class="text-xl font-bold mb-8">How can I help you?</h3>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-3 px-2">
-                        <button onclick="fillExample('Explain why the sky is blue')" class="p-4 sm:p-5 text-left border dark:border-neutral-800 rounded-2xl hover:bg-gray-50 dark:hover:bg-neutral-900 transition flex flex-col gap-1 group">
-                            <span class="text-sm font-bold group-hover:text-blue-500 transition-colors">Sky is blue</span>
-                            <span class="text-xs text-gray-500 dark:text-neutral-400 font-medium leading-relaxed">Physics of light scattering and atmosphere.</span>
+                        <button onclick="fillExample('Explain why the sky is blue')" class="p-4 text-left border dark:border-neutral-800 rounded-2xl hover:bg-gray-50 dark:hover:bg-neutral-900 transition flex flex-col gap-1">
+                            <span class="text-sm font-bold">Sky is blue</span>
+                            <span class="text-xs text-gray-500 font-medium">Physics and light.</span>
                         </button>
-                        <button onclick="fillExample('Suggest 3 healthy breakfast ideas')" class="p-4 sm:p-5 text-left border dark:border-neutral-800 rounded-2xl hover:bg-gray-50 dark:hover:bg-neutral-900 transition flex flex-col gap-1 group">
-                            <span class="text-sm font-bold group-hover:text-green-500 transition-colors">Healthy breakfast</span>
-                            <span class="text-xs text-gray-500 dark:text-neutral-400 font-medium leading-relaxed">Quick and nutritious recipes for energy.</span>
+                        <button onclick="fillExample('Suggest 3 healthy breakfast ideas')" class="p-4 text-left border dark:border-neutral-800 rounded-2xl hover:bg-gray-50 dark:hover:bg-neutral-900 transition flex flex-col gap-1">
+                            <span class="text-sm font-bold">Breakfast ideas</span>
+                            <span class="text-xs text-gray-500 font-medium">Quick and healthy.</span>
                         </button>
                     </div>
                 </div>
-                <div id="messages-container" class="space-y-6 sm:space-y-8 max-w-4xl mx-auto"></div>
+                <div id="messages-container" class="space-y-6 max-w-4xl mx-auto"></div>
             </div>
 
             <div class="p-4 md:p-10 pt-0">
                 <div class="max-w-4xl mx-auto flex flex-col items-center w-full">
-                    <div class="w-full flex gap-2 sm:gap-3 items-end bg-gray-50 dark:bg-neutral-900 p-2.5 sm:p-3 border dark:border-neutral-800 rounded-[24px] sm:rounded-[28px] focus-within:ring-2 ring-black dark:ring-white transition shadow-sm">
+                    <div class="w-full flex gap-2 items-end bg-gray-50 dark:bg-neutral-900 p-2.5 border dark:border-neutral-800 rounded-[24px] focus-within:ring-2 ring-black dark:ring-white transition shadow-sm">
                         <textarea id="query" rows="1" class="flex-1 bg-transparent p-2 outline-none text-[16px] sm:text-sm resize-none" placeholder="Type a message..." onkeydown="if(event.key==='Enter' && !event.shiftKey) { event.preventDefault(); send(); }"></textarea>
-                        <button id="send-btn" onclick="send()" class="bg-black dark:bg-white text-white dark:text-black p-3 rounded-xl sm:rounded-2xl shadow-lg active:scale-90 transition shrink-0">
+                        <button id="send-btn" onclick="send()" class="bg-black dark:bg-white text-white dark:text-black p-3 rounded-xl shadow-lg active:scale-90 transition shrink-0">
                             <svg id="send-icon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 10l7-7m0 0l7 7m-7-7v18"></path></svg>
                             <svg id="stop-icon" class="w-5 h-5 hidden" fill="currentColor" viewBox="0 0 24 24"><rect width="14" height="14" x="5" y="5" rx="2" /></svg>
                         </button>
                     </div>
-                    <p class="text-[10px] text-gray-400 mt-2 font-medium text-center">Madhuram is AI and can make mistakes.</p>
                 </div>
             </div>
         </main>
@@ -127,13 +129,8 @@
             const backdrop = document.getElementById('sidebar-backdrop');
             if (window.innerWidth < 1024) {
                 const isHidden = sb.classList.contains('-translate-x-full');
-                if(isHidden) {
-                    sb.classList.remove('-translate-x-full');
-                    backdrop.classList.remove('hidden');
-                } else {
-                    sb.classList.add('-translate-x-full');
-                    backdrop.classList.add('hidden');
-                }
+                sb.classList.toggle('-translate-x-full', !isHidden);
+                backdrop.classList.toggle('hidden', !isHidden);
             } else {
                 const isCollapsed = sb.style.width === '64px';
                 sb.style.width = isCollapsed ? '288px' : '64px';
@@ -237,12 +234,11 @@
 
         function appendMessage(role, text) {
             const container = document.getElementById('messages-container'), wrapper = document.createElement('div');
-            const isAssistant = role === 'assistant';
             wrapper.className = `flex flex-col ${role === 'user' ? 'items-end' : 'items-start'} animate-in fade-in slide-in-from-bottom-2 duration-300 w-full`;
             const user = JSON.parse(localStorage.getItem('user_info') || '{}'), name = role === 'user' ? (user.name || "User") : "Madhuram";
-            const bubbleClass = isAssistant ? 'bg-gray-50 dark:bg-neutral-900 border dark:border-neutral-800 shadow-sm' : 'bg-black text-white shadow-md';
+            const bubbleClass = (role === 'assistant') ? 'bg-gray-50 dark:bg-neutral-900 border dark:border-neutral-800' : 'bg-black text-white';
             wrapper.innerHTML = `<div class="max-w-[95%] sm:max-w-[85%] ${bubbleClass} p-4 sm:p-5 rounded-2xl sm:rounded-3xl shadow-sm"><p class="text-[9px] font-black opacity-40 mb-1.5 uppercase tracking-widest">${name}</p><div class="text-[15px] leading-relaxed font-medium prose dark:prose-invert message-content">${marked.parse(text)}</div></div>`;
-            if (isAssistant) addActionButtons(wrapper);
+            if (role === 'assistant') addActionButtons(wrapper);
             container.appendChild(wrapper);
             document.getElementById('chat-window').scrollTop = document.getElementById('chat-window').scrollHeight;
         }
@@ -250,8 +246,7 @@
         function copyResponse(btn) { 
             const text = btn.closest('.flex-col').querySelector('.message-content').innerText;
             navigator.clipboard.writeText(text); 
-            const original = btn.innerText; btn.innerText = "COPIED"; 
-            setTimeout(() => btn.innerText = original, 2000); 
+            btn.innerText = "COPIED"; setTimeout(() => btn.innerText = "COPY", 2000); 
         }
 
         function redoResponse() { const c = document.getElementById('messages-container'); if (c.lastElementChild) c.removeChild(c.lastElementChild); send(true); }
