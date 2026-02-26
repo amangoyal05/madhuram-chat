@@ -133,8 +133,9 @@
                 sb.classList.toggle('-translate-x-full', !isHidden);
                 backdrop.classList.toggle('hidden', !isHidden);
             } else {
-                const isCollapsed = sb.style.width === '64px';
-                sb.style.width = isCollapsed ? '288px' : '64px';
+                const isCollapsed = sb.style.width === '0px' || sb.style.width === '0';
+                sb.style.width = isCollapsed ? '288px' : '0px';
+                sb.style.overflow = isCollapsed ? '' : 'hidden';
                 document.querySelectorAll('.sidebar-text').forEach(t => t.classList.toggle('hidden', !isCollapsed));
             }
         }
