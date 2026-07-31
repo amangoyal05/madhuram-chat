@@ -39,6 +39,13 @@
         .prose li { margin-bottom: 0.5rem; }
         .prose p { margin-bottom: 0.75rem; }
         .prose p:last-child { margin-bottom: 0; }
+
+        /* quality floor */
+        *:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; border-radius: 4px; }
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+        }
+        .tabular-nums { font-variant-numeric: tabular-nums; }
     </style>
 </head>
 <body class="bg-white dark:bg-[#0a0a0a] flex flex-col overflow-hidden text-gray-900 dark:text-gray-100">
@@ -54,10 +61,7 @@
         
         <div class="flex items-center gap-2">
             <div id="auth-wrapper"><div class="g_id_signin" data-type="standard"></div></div>
-            <div id="user-profile" class="hidden flex items-center gap-2 pl-2 border-l dark:border-neutral-800">
-                <img id="user-pic" src="" class="w-7 h-7 rounded-full border dark:border-neutral-700">
-                <button onclick="logout()" class="text-[9px] text-red-500 font-bold uppercase hover:underline">Logout</button>
-            </div>
+            <div id="user-profile" class="hidden"></div>
         </div>
     </nav>
 
@@ -66,19 +70,53 @@
 
         <aside id="sidebar" class="fixed lg:relative inset-y-0 left-0 w-72 bg-gray-50 dark:bg-[#0f0f0f] border-r dark:border-neutral-800 flex flex-col sidebar-transition z-40 -translate-x-full lg:translate-x-0 pt-[80px] lg:pt-4 shadow-2xl lg:shadow-none">
             
-            <div class="p-4 flex flex-col gap-4">
-                <div class="flex bg-gray-200 dark:bg-neutral-800 p-1 rounded-xl text-[10px] font-bold w-full">
-                    <button onclick="setTheme('light')" class="flex-1 py-2 rounded-lg hover:bg-white dark:hover:bg-neutral-700 uppercase">Light</button>
-                    <button onclick="setTheme('dark')" class="flex-1 py-2 rounded-lg hover:bg-white dark:hover:bg-neutral-700 uppercase">Dark</button>
-                </div>
-
-                <button onclick="newChat()" class="w-full h-12 flex items-center justify-center gap-3 bg-black dark:bg-white text-white dark:text-black rounded-xl font-bold shadow-lg hover:opacity-90 transition active:scale-95">
-                    <span class="text-xl">+</span>
-                    <span class="sidebar-text">New Chat</span>
+            <div class="p-4">
+                <button onclick="newChat()" class="w-full h-11 flex items-center justify-center gap-2.5 bg-black dark:bg-white text-white dark:text-black rounded-xl font-semibold text-sm shadow-sm hover:opacity-90 transition active:scale-[0.98]">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+                    <span class="sidebar-text">New chat</span>
                 </button>
             </div>
-            
+
+            <div class="px-4 pb-2">
+                <p class="text-[10px] font-semibold uppercase tracking-wider text-gray-400 dark:text-neutral-600">Recent</p>
+            </div>
+
             <div id="history-list" class="flex-1 overflow-y-auto p-3 space-y-2 chat-scroll"></div>
+
+            <!-- account -->
+            <div id="account-block" class="hidden relative p-3 border-t border-gray-200 dark:border-neutral-800">
+
+                <!-- popup menu -->
+                <div id="account-menu" class="hidden absolute bottom-full left-3 right-3 mb-2 bg-white dark:bg-[#1a1a1a] border border-gray-200 dark:border-neutral-800 rounded-xl shadow-xl overflow-hidden py-1">
+                    <button onclick="openSettings('general'); closeAccountMenu();" class="w-full flex items-center gap-3 px-3 py-2.5 text-sm hover:bg-gray-50 dark:hover:bg-neutral-800 transition text-left">
+                        <svg class="w-4 h-4 opacity-60" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.343 3.94c.09-.542.56-.94 1.11-.94h1.093c.55 0 1.02.398 1.11.94l.149.894c.07.424.384.764.78.93.398.164.855.142 1.205-.108l.737-.527a1.125 1.125 0 011.45.12l.773.774c.39.389.44 1.002.12 1.45l-.527.737c-.25.35-.272.806-.107 1.204.165.397.505.71.93.78l.893.15c.543.09.94.56.94 1.109v1.094c0 .55-.397 1.02-.94 1.11l-.893.149c-.425.07-.765.383-.93.78-.165.398-.143.854.107 1.204l.527.738c.32.447.269 1.06-.12 1.45l-.774.773a1.125 1.125 0 01-1.449.12l-.738-.527c-.35-.25-.806-.272-1.203-.107-.398.165-.71.505-.781.929l-.149.894c-.09.542-.56.94-1.11.94h-1.094c-.55 0-1.019-.398-1.11-.94l-.148-.894c-.071-.424-.384-.764-.782-.93-.397-.164-.854-.142-1.204.108l-.737.527a1.125 1.125 0 01-1.45-.12l-.773-.774a1.125 1.125 0 01-.12-1.45l.527-.737c.25-.35.273-.806.108-1.204-.165-.397-.505-.71-.93-.78l-.894-.15c-.542-.09-.94-.56-.94-1.109v-1.094c0-.55.398-1.02.94-1.11l.894-.149c.424-.07.765-.383.93-.78.165-.398.143-.854-.108-1.204l-.526-.738a1.125 1.125 0 01.12-1.45l.773-.773a1.125 1.125 0 011.45-.12l.737.527c.35.25.807.272 1.204.107.397-.165.71-.505.78-.929l.15-.894z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                        Settings
+                    </button>
+                    <button onclick="openSettings('usage'); closeAccountMenu();" class="w-full flex items-center gap-3 px-3 py-2.5 text-sm hover:bg-gray-50 dark:hover:bg-neutral-800 transition text-left">
+                        <svg class="w-4 h-4 opacity-60" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"/></svg>
+                        Usage
+                    </button>
+                    <button onclick="openSettings('api'); closeAccountMenu();" class="w-full flex items-center gap-3 px-3 py-2.5 text-sm hover:bg-gray-50 dark:hover:bg-neutral-800 transition text-left">
+                        <svg class="w-4 h-4 opacity-60" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/></svg>
+                        API keys
+                    </button>
+                    <div class="h-px bg-gray-200 dark:bg-neutral-800 my-1"></div>
+                    <button onclick="logout()" class="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 transition text-left">
+                        <svg class="w-4 h-4 opacity-70" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9"/></svg>
+                        Sign out
+                    </button>
+                </div>
+
+                <!-- account button -->
+                <button onclick="toggleAccountMenu()" class="w-full flex items-center gap-2.5 p-2 rounded-xl hover:bg-gray-100 dark:hover:bg-neutral-800 transition text-left">
+                    <img id="account-pic" src="" class="w-7 h-7 rounded-full border border-gray-200 dark:border-neutral-700 shrink-0 bg-gray-100 dark:bg-neutral-800">
+                    <div class="sidebar-text min-w-0 flex-1">
+                        <p id="account-name" class="text-sm font-medium truncate leading-tight"></p>
+                        <p id="account-plan" class="text-[11px] text-gray-500 dark:text-neutral-500 truncate leading-tight"></p>
+                    </div>
+                    <svg class="sidebar-text w-4 h-4 opacity-40 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 9l4-4 4 4M16 15l-4 4-4-4"/></svg>
+                </button>
+            </div>
         </aside>
 
         <main class="flex-1 flex flex-col relative bg-white dark:bg-[#0a0a0a] w-full min-w-0">
@@ -119,10 +157,10 @@
     </div>
 
     <script>
-        const API_BASE = "https://api.maruthlabs.com";
+        const API_BASE = "https://test.maruthlabs.com";
         let currentThreadId = null, lastUserMessage = "", abortController = null, isGenerating = false;
 
-        function setTheme(m) { localStorage.setItem('theme', m); applyTheme(m); }
+        function setTheme(m) { localStorage.setItem('theme', m); applyTheme(m); if (typeof paintTheme === 'function') paintTheme(); }
         function logout() { localStorage.clear(); location.reload(); }
         
         function toggleSidebar() { 
@@ -153,14 +191,28 @@
 
         function checkAuth() {
             const token = localStorage.getItem('session_token');
-            if (token) {
-                document.getElementById('lock-screen').classList.add('hidden');
-                document.getElementById('auth-wrapper').classList.add('hidden');
-                document.getElementById('user-profile').classList.remove('hidden');
-                const user = JSON.parse(localStorage.getItem('user_info'));
-                document.getElementById('user-pic').src = user.picture;
-                loadHistory();
+            if (!token) return;
+
+            // Guard: a token can exist without user_info (cleared storage, manual
+            // token injection, partial login). Reading .picture on null used to
+            // throw and leave the app in a broken half-loaded state.
+            let user = null;
+            try { user = JSON.parse(localStorage.getItem('user_info') || 'null'); }
+            catch (e) { user = null; }
+
+            if (!user) {
+                // Inconsistent session — clear it and fall back to the lock screen.
+                localStorage.removeItem('session_token');
+                localStorage.removeItem('user_info');
+                return;
             }
+
+            document.getElementById('lock-screen').classList.add('hidden');
+            document.getElementById('auth-wrapper').classList.add('hidden');
+            document.getElementById('user-profile').classList.remove('hidden');
+            // avatar and name live in the sidebar account block, painted by paintAccount()
+            loadHistory();
+            paintAccount();
         }
 
         async function send(isRedo = false) {
@@ -190,6 +242,28 @@
                     headers: { 'Authorization': `Bearer ${localStorage.getItem('session_token')}`, 'Content-Type': 'application/json' },
                     body: JSON.stringify({ message: msg, thread_id: currentThreadId, is_redo: isRedo })
                 });
+
+                // A non-200 never reaches the stream reader, so handle it explicitly.
+                if (!res.ok) {
+                    let detail = '';
+                    try { detail = (await res.json()).detail || ''; } catch (e) {}
+                    if (res.status === 401) {
+                        showToast("Your session expired. Please sign in again.");
+                        localStorage.removeItem('session_token');
+                        localStorage.removeItem('user_info');
+                        setTimeout(() => location.reload(), 1500);
+                    } else if (res.status === 429) {
+                        showToast(detail || "Rate limit reached. Please wait a moment.");
+                        paintAccount();
+                    } else {
+                        showToast(detail || `Request failed (${res.status}). Please try again.`);
+                    }
+                    contentDiv.innerHTML = `<span class="text-red-500 text-sm">${detail || 'Request failed. Please try again.'}</span>`;
+                    if (res.status !== 401) addRetryButton(wrapper, 'Request failed');
+                    setGeneratingState(false);
+                    return;
+                }
+
                 const reader = res.body.getReader(), decoder = new TextDecoder();
                 let fullText = "";
                 while (true) {
@@ -199,7 +273,17 @@
                     for (const line of lines) {
                         if (line.startsWith('data: ')) {
                             const data = JSON.parse(line.slice(6));
-                            currentThreadId = data.thread_id;
+                            if (data.thread_id) currentThreadId = data.thread_id;
+
+                            // the backend sends error frames inside a 200 stream
+                            if (data.error) {
+                                contentDiv.innerHTML = `<span class="text-red-500 text-sm">${data.error}</span>`;
+                                addRetryButton(wrapper, 'Generation failed');
+                                showToast(data.error);
+                                break;
+                            }
+
+                            if (!data.token) continue;   // never append undefined
                             fullText += data.token;
                             contentDiv.innerHTML = marked.parse(fullText);
                             document.getElementById('chat-window').scrollTop = document.getElementById('chat-window').scrollHeight;
@@ -208,8 +292,17 @@
                 }
                 addActionButtons(wrapper);
                 loadHistory();
+                paintAccount();
             } catch (err) {
-                if (err.name === 'AbortError') contentDiv.innerHTML += " <span class='text-red-500 italic text-xs'>(Stopped)</span>";
+                if (err.name === 'AbortError') {
+                    contentDiv.innerHTML += " <span class='text-red-500 italic text-xs'>(Stopped)</span>";
+                } else {
+                    // Previously silent: the user saw an empty bubble and no reason.
+                    console.error('chat error:', err);
+                    contentDiv.innerHTML = `<span class="text-red-500 text-sm">Couldn't get a response. Please try again.</span>`;
+                    addRetryButton(wrapper, 'Connection problem');
+                    showToast("Something went wrong. Please try again.");
+                }
             } finally { setGeneratingState(false); }
         }
 
@@ -246,6 +339,23 @@
             document.getElementById('chat-window').scrollTop = document.getElementById('chat-window').scrollHeight;
         }
 
+        function addRetryButton(wrapper, message) {
+            const bar = document.createElement('div');
+            bar.className = 'flex gap-3 mt-2 ml-4 items-center';
+            bar.innerHTML = `
+                <span class="text-[11px] text-gray-400">${message}</span>
+                <button onclick="retryLast(this)" class="text-[10px] font-bold uppercase px-2.5 py-1 rounded-lg border border-gray-300 dark:border-neutral-700 hover:bg-gray-50 dark:hover:bg-neutral-800 transition">
+                    Try again
+                </button>`;
+            wrapper.appendChild(bar);
+        }
+
+        function retryLast(btn) {
+            const wrapper = btn.closest('.flex.flex-col');
+            if (wrapper) wrapper.remove();
+            send(true);
+        }
+
         function copyResponse(btn) { 
             const text = btn.closest('.flex-col').querySelector('.message-content').innerText;
             navigator.clipboard.writeText(text); 
@@ -267,11 +377,403 @@
         }
 
         async function deleteThread(e, id) { e.stopPropagation(); if (!confirm("Delete chat?")) return; await fetch(`${API_BASE}/threads/${id}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${localStorage.getItem('session_token')}` } }); if (currentThreadId === id) newChat(); loadHistory(); }
-        async function loadThread(id) { currentThreadId = id; document.getElementById('welcome-screen').classList.add('hidden'); const res = await fetch(`${API_BASE}/threads/${id}`, { headers: { 'Authorization': `Bearer ${localStorage.getItem('session_token')}` } }); const msgs = await res.json(); document.getElementById('messages-container').innerHTML = ""; msgs.forEach(m => appendMessage(m.role, m.content)); if(window.innerWidth < 1024) toggleSidebar(); loadHistory(); }
+        async function loadThread(id) {
+            currentThreadId = id;
+            document.getElementById('welcome-screen').classList.add('hidden');
+            const res = await fetch(`${API_BASE}/threads/${id}`, { headers: { 'Authorization': `Bearer ${localStorage.getItem('session_token')}` } });
+            const msgs = await res.json();
+            document.getElementById('messages-container').innerHTML = "";
+            msgs.forEach(m => appendMessage(m.role, m.content));
+
+            // a thread ending on a user turn means the reply never saved
+            const last = msgs[msgs.length - 1];
+            if (last && last.role === 'user') {
+                lastUserMessage = last.content;
+                const w = document.createElement('div');
+                w.className = 'flex flex-col items-start w-full';
+                addRetryButton(w, 'No response was saved');
+                document.getElementById('messages-container').appendChild(w);
+            }
+
+            if (window.innerWidth < 1024) toggleSidebar();
+            loadHistory();
+        }
         function newChat() { currentThreadId = null; document.getElementById('messages-container').innerHTML = ""; document.getElementById('welcome-screen').classList.remove('hidden'); if(window.innerWidth < 1024) toggleSidebar(); loadHistory(); }
         function fillExample(t) { document.getElementById('query').value = t; send(); }
         document.getElementById('query').addEventListener('input', function() { this.style.height = 'auto'; this.style.height = (this.scrollHeight) + 'px'; });
         window.onload = checkAuth;
     </script>
+
+    <!-- ===================== TOAST ===================== -->
+    <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-[60] hidden">
+        <div class="bg-neutral-900 dark:bg-white text-white dark:text-black text-sm font-medium px-5 py-3 rounded-xl shadow-2xl border border-neutral-700 dark:border-neutral-300 max-w-sm text-center"
+             id="toast-text"></div>
+    </div>
+
+    <script>
+        let toastTimer = null;
+        function showToast(message, ms = 4000) {
+            const t = document.getElementById('toast');
+            document.getElementById('toast-text').textContent = message;
+            t.classList.remove('hidden');
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => t.classList.add('hidden'), ms);
+        }
+    </script>
+
+    <!-- ═══════════════════ SETTINGS ═══════════════════ -->
+    <div id="settings-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+      <div class="bg-white dark:bg-[#111] border border-gray-200 dark:border-neutral-800 rounded-2xl max-w-xl w-full max-h-[85vh] flex flex-col shadow-2xl overflow-hidden">
+
+        <!-- header -->
+        <div class="flex items-center justify-between px-6 pt-5 pb-0">
+          <h2 class="text-lg font-semibold tracking-tight">Settings</h2>
+          <button onclick="closeSettings()" class="p-1.5 -mr-1.5 rounded-lg text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-neutral-800 transition">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M6 18L18 6M6 6l12 12"/></svg>
+          </button>
+        </div>
+
+        <!-- tabs -->
+        <div class="flex gap-1 px-6 pt-4 border-b border-gray-200 dark:border-neutral-800">
+          <button onclick="settingsTab('general')" data-tab="general"
+                  class="settings-tab px-3 py-2.5 text-sm font-medium border-b-2 -mb-px transition">General</button>
+          <button onclick="settingsTab('usage')" data-tab="usage"
+                  class="settings-tab px-3 py-2.5 text-sm font-medium border-b-2 -mb-px transition">Usage</button>
+          <button onclick="settingsTab('api')" data-tab="api"
+                  class="settings-tab px-3 py-2.5 text-sm font-medium border-b-2 -mb-px transition">API</button>
+        </div>
+
+        <div class="overflow-y-auto chat-scroll px-6 py-5">
+
+          <!-- ── GENERAL ── -->
+          <section data-panel="general" class="settings-panel space-y-6">
+            <div>
+              <label class="block text-sm font-medium mb-1">Appearance</label>
+              <p class="text-xs text-gray-500 dark:text-neutral-400 mb-3">Match your system, or pick a fixed theme.</p>
+              <div class="grid grid-cols-3 gap-2">
+                <button onclick="setTheme('light')" data-theme-opt="light"
+                        class="theme-opt flex flex-col items-center gap-2 py-3 rounded-xl border transition">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path stroke-linecap="round" d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+                  <span class="text-xs font-medium">Light</span>
+                </button>
+                <button onclick="setTheme('dark')" data-theme-opt="dark"
+                        class="theme-opt flex flex-col items-center gap-2 py-3 rounded-xl border transition">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+                  <span class="text-xs font-medium">Dark</span>
+                </button>
+                <button onclick="setTheme('system')" data-theme-opt="system"
+                        class="theme-opt flex flex-col items-center gap-2 py-3 rounded-xl border transition">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="13" rx="2"/><path stroke-linecap="round" d="M8 21h8M12 17v4"/></svg>
+                  <span class="text-xs font-medium">System</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="pt-5 border-t border-gray-200 dark:border-neutral-800">
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-sm font-medium" id="settings-user-name">Signed in</p>
+                  <p class="text-xs text-gray-500 dark:text-neutral-400" id="settings-user-email"></p>
+                </div>
+                <button onclick="logout()" class="text-xs font-medium text-red-500 hover:text-red-600 px-3 py-1.5 rounded-lg hover:bg-red-50 dark:hover:bg-red-950/30 transition">Sign out</button>
+              </div>
+            </div>
+          </section>
+
+          <!-- ── USAGE ── -->
+          <section data-panel="usage" class="settings-panel hidden space-y-5">
+            <div class="flex items-baseline justify-between">
+              <p class="text-sm text-gray-500 dark:text-neutral-400">Today's usage</p>
+              <span id="usage-tier" class="text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full bg-gray-100 dark:bg-neutral-800"></span>
+            </div>
+
+            <div>
+              <div class="flex items-baseline justify-between mb-2">
+                <span class="text-sm font-medium">Messages</span>
+                <span id="usage-msg-text" class="text-sm tabular-nums text-gray-500 dark:text-neutral-400">—</span>
+              </div>
+              <div class="w-full h-2 bg-gray-100 dark:bg-neutral-800 rounded-full overflow-hidden">
+                <div id="usage-msg-bar" class="h-full rounded-full bg-gray-900 dark:bg-white transition-all duration-500" style="width:0%"></div>
+              </div>
+            </div>
+
+            <div>
+              <div class="flex items-baseline justify-between mb-2">
+                <span class="text-sm font-medium">Tokens</span>
+                <span id="usage-tok-text" class="text-sm tabular-nums text-gray-500 dark:text-neutral-400">—</span>
+              </div>
+              <div class="w-full h-2 bg-gray-100 dark:bg-neutral-800 rounded-full overflow-hidden">
+                <div id="usage-tok-bar" class="h-full rounded-full bg-gray-900 dark:bg-white transition-all duration-500" style="width:0%"></div>
+              </div>
+            </div>
+
+            <p class="text-xs text-gray-500 dark:text-neutral-400 pt-1">
+              Limits reset at 00:00 UTC. Need more?
+              <a href="mailto:contact@maruthlabs.com" class="underline hover:text-gray-900 dark:hover:text-white">Get in touch</a>.
+            </p>
+          </section>
+
+          <!-- ── API ── -->
+          <section data-panel="api" class="settings-panel hidden space-y-4">
+            <div>
+              <p class="text-sm text-gray-500 dark:text-neutral-400">
+                Use Madhuram from your own code. Free while in preview.
+              </p>
+            </div>
+
+            <div id="api-status" class="text-sm text-gray-500">Loading&hellip;</div>
+
+            <div id="api-create-block" class="hidden space-y-3">
+              <label class="flex gap-2.5 items-start text-xs cursor-pointer p-3 rounded-xl border border-gray-200 dark:border-neutral-800">
+                <input type="checkbox" id="api-allow-training" class="mt-0.5 accent-black dark:accent-white">
+                <span class="text-gray-600 dark:text-neutral-400 leading-relaxed">Use my API requests to improve future models. Optional — the API works the same either way.</span>
+              </label>
+              <button onclick="createApiKey()" class="w-full h-10 bg-black dark:bg-white text-white dark:text-black rounded-xl font-semibold text-sm hover:opacity-90 transition active:scale-[0.98]">
+                Create API key
+              </button>
+            </div>
+
+            <div id="api-reveal" class="hidden rounded-xl border border-amber-300 dark:border-amber-700/60 bg-amber-50 dark:bg-amber-950/20 p-4 space-y-3">
+              <p class="text-xs font-semibold text-amber-800 dark:text-amber-400">Copy this key now — you won't be able to see it again.</p>
+              <pre id="api-raw-key" class="text-[11px] bg-white dark:bg-black/60 border border-amber-200 dark:border-amber-900/50 p-2.5 rounded-lg overflow-x-auto select-all font-mono"></pre>
+              <button onclick="copyApiKey()" id="api-copy-btn" class="text-xs font-semibold px-3 py-1.5 rounded-lg bg-amber-800 dark:bg-amber-400 text-white dark:text-black hover:opacity-90 transition">Copy key</button>
+            </div>
+
+            <details class="pt-2 border-t border-gray-200 dark:border-neutral-800">
+              <summary class="text-sm font-medium cursor-pointer py-2">Quickstart</summary>
+              <pre class="text-[11px] bg-gray-50 dark:bg-neutral-900 border border-gray-200 dark:border-neutral-800 p-3 rounded-xl overflow-x-auto mt-2 font-mono leading-relaxed">from openai import OpenAI
+
+client = OpenAI(
+    api_key="YOUR_KEY",
+    base_url="https://llm.maruthlabs.com/v1"
+)
+r = client.chat.completions.create(
+    model="madhuram",
+    messages=[{"role": "user", "content": "Hello"}]
+)
+print(r.choices[0].message.content)</pre>
+            </details>
+          </section>
+
+        </div>
+      </div>
+    </div>
+
+    <script>
+        const apiHeaders = () => ({
+            'Authorization': `Bearer ${localStorage.getItem('session_token')}`,
+            'Content-Type': 'application/json'
+        });
+
+        function openApiModal() { openSettings('api'); }
+
+        // ---------- account menu ----------
+        function toggleAccountMenu() {
+            document.getElementById('account-menu').classList.toggle('hidden');
+        }
+        function closeAccountMenu() {
+            document.getElementById('account-menu').classList.add('hidden');
+        }
+        document.addEventListener('click', (e) => {
+            const block = document.getElementById('account-block');
+            if (block && !block.contains(e.target)) closeAccountMenu();
+        });
+
+        function paintAccount() {
+            const u = JSON.parse(localStorage.getItem('user_info') || 'null');
+            if (!u) return;
+            document.getElementById('account-block').classList.remove('hidden');
+            document.getElementById('account-name').textContent = u.name || u.email || 'Account';
+            document.getElementById('account-plan').textContent = u.email || '';
+            if (u.picture) document.getElementById('account-pic').src = u.picture;
+        }
+
+        // ---------- modal ----------
+        function openSettings(tab = 'general') {
+            const m = document.getElementById('settings-modal');
+            m.classList.remove('hidden'); m.classList.add('flex');
+            settingsTab(tab);
+            paintTheme();
+            const u = JSON.parse(localStorage.getItem('user_info') || 'null');
+            if (u) {
+                document.getElementById('settings-user-name').textContent = u.name || 'Signed in';
+                document.getElementById('settings-user-email').textContent = u.email || '';
+            }
+        }
+
+        function closeSettings() {
+            const m = document.getElementById('settings-modal');
+            m.classList.add('hidden'); m.classList.remove('flex');
+            document.getElementById('api-reveal').classList.add('hidden');
+        }
+
+        function settingsTab(name) {
+            document.querySelectorAll('.settings-panel').forEach(p =>
+                p.classList.toggle('hidden', p.dataset.panel !== name));
+            document.querySelectorAll('.settings-tab').forEach(t => {
+                const on = t.dataset.tab === name;
+                t.className = 'settings-tab px-3 py-2.5 text-sm font-medium border-b-2 -mb-px transition ' +
+                    (on ? 'border-gray-900 dark:border-white text-gray-900 dark:text-white'
+                        : 'border-transparent text-gray-400 hover:text-gray-700 dark:hover:text-neutral-300');
+            });
+            if (name === 'usage') loadQuota();
+            if (name === 'api') loadApiStatus();
+        }
+
+        function paintTheme() {
+            const cur = localStorage.getItem('theme') || 'system';
+            document.querySelectorAll('.theme-opt').forEach(b => {
+                const on = b.dataset.themeOpt === cur;
+                b.className = 'theme-opt flex flex-col items-center gap-2 py-3 rounded-xl border transition ' +
+                    (on ? 'border-gray-900 dark:border-white bg-gray-50 dark:bg-neutral-800'
+                        : 'border-gray-200 dark:border-neutral-800 text-gray-500 hover:border-gray-300 dark:hover:border-neutral-700');
+            });
+        }
+
+        // ---------- usage ----------
+        function barColour(pct) {
+            if (pct >= 90) return 'bg-red-500';
+            if (pct >= 70) return 'bg-amber-500';
+            return 'bg-gray-900 dark:bg-white';
+        }
+
+        const num = (n) => Number(n).toLocaleString('en-US');
+
+        function usageError(msg) {
+            document.getElementById('usage-msg-text').textContent = msg;
+            document.getElementById('usage-tok-text').textContent = msg;
+            document.getElementById('usage-tier').textContent = '';
+        }
+
+        async function loadQuota() {
+            try {
+                const res = await fetch(`${API_BASE}/usage`, { headers: apiHeaders() });
+                if (!res.ok) {
+                    console.error('usage failed:', res.status, await res.text());
+                    usageError(res.status === 401 ? 'Session expired — sign in again'
+                                                  : `Couldn't load (${res.status})`);
+                    return;
+                }
+                const d = await res.json();
+
+                document.getElementById('usage-tier').textContent = d.tier || 'free';
+
+                // messages
+                const mUsed = d.messages_used ?? 0, mLim = d.messages_limit;
+                if (mLim === 'unlimited') {
+                    document.getElementById('usage-msg-text').textContent = `${num(mUsed)} · no limit`;
+                    document.getElementById('usage-msg-bar').style.width = '100%';
+                    document.getElementById('usage-msg-bar').className = 'h-full rounded-full bg-emerald-500 transition-all duration-500';
+                } else {
+                    const pct = Math.min(100, Math.round((mUsed / mLim) * 100));
+                    document.getElementById('usage-msg-text').textContent = `${num(mUsed)} / ${num(mLim)}`;
+                    const bar = document.getElementById('usage-msg-bar');
+                    bar.style.width = pct + '%';
+                    bar.className = `h-full rounded-full ${barColour(pct)} transition-all duration-500`;
+                }
+
+                // tokens
+                const tUsed = d.tokens_used, tLim = d.tokens_limit;
+                if (tUsed === undefined) {
+                    document.getElementById('usage-tok-text').textContent = 'unavailable';
+                } else if (tLim === 'unlimited') {
+                    document.getElementById('usage-tok-text').textContent = `${num(tUsed)} · no limit`;
+                    document.getElementById('usage-tok-bar').style.width = '100%';
+                    document.getElementById('usage-tok-bar').className = 'h-full rounded-full bg-emerald-500 transition-all duration-500';
+                } else {
+                    const pct = Math.min(100, Math.round((tUsed / tLim) * 100));
+                    document.getElementById('usage-tok-text').textContent = `${num(tUsed)} / ${num(tLim)}`;
+                    const bar = document.getElementById('usage-tok-bar');
+                    bar.style.width = pct + '%';
+                    bar.className = `h-full rounded-full ${barColour(pct)} transition-all duration-500`;
+                }
+            } catch (e) {
+                console.error('usage error:', e);
+                usageError("Couldn't load usage");
+            }
+        }
+
+        // ---------- api keys ----------
+        async function loadApiStatus() {
+            const status = document.getElementById('api-status');
+            const createBlock = document.getElementById('api-create-block');
+            try {
+                const res = await fetch(`${API_BASE}/api-keys`, { headers: apiHeaders() });
+                if (!res.ok) { status.textContent = 'Sign in to manage API keys.'; return; }
+                const d = await res.json();
+
+                if (!d.has_key) {
+                    status.innerHTML = '<span class="text-gray-500 dark:text-neutral-400">No key yet.</span>';
+                    createBlock.classList.remove('hidden');
+                    return;
+                }
+                createBlock.classList.add('hidden');
+                status.innerHTML = `
+                    <div class="rounded-xl border border-gray-200 dark:border-neutral-800 p-4 space-y-3">
+                        <div class="flex items-center justify-between">
+                            <code class="text-sm font-mono">${d.key_prefix}&hellip;</code>
+                            <button onclick="regenerateApiKey()" class="text-xs font-medium text-gray-500 hover:text-gray-900 dark:hover:text-white underline">Regenerate</button>
+                        </div>
+                        <div class="flex gap-5 text-xs text-gray-500 dark:text-neutral-400">
+                            <span><b class="text-gray-900 dark:text-white">${num(d.calls)}</b> calls</span>
+                            <span><b class="text-gray-900 dark:text-white">${num(d.total_tokens)}</b> tokens</span>
+                        </div>
+                        <label class="flex gap-2 items-center text-xs cursor-pointer pt-1 border-t border-gray-100 dark:border-neutral-800">
+                            <input type="checkbox" id="api-consent-toggle" class="accent-black dark:accent-white mt-2" ${d.allow_training ? 'checked' : ''}>
+                            <span class="text-gray-600 dark:text-neutral-400 mt-2">Use my API data to improve future models</span>
+                        </label>
+                    </div>`;
+                document.getElementById('api-consent-toggle').onchange = async (e) => {
+                    await fetch(`${API_BASE}/api-keys/training-consent`, {
+                        method: 'PATCH', headers: apiHeaders(),
+                        body: JSON.stringify({ allow_training: e.target.checked })
+                    });
+                    showToast(e.target.checked ? 'Training consent on' : 'Training consent off');
+                };
+            } catch (err) {
+                status.textContent = 'Could not load API key.';
+            }
+        }
+
+        function revealApiKey(key) {
+            document.getElementById('api-raw-key').textContent = key;
+            document.getElementById('api-reveal').classList.remove('hidden');
+            document.getElementById('api-copy-btn').textContent = 'Copy key';
+        }
+
+        async function createApiKey() {
+            const allow = document.getElementById('api-allow-training').checked;
+            const res = await fetch(`${API_BASE}/api-keys`, {
+                method: 'POST', headers: apiHeaders(), body: JSON.stringify({ allow_training: allow })
+            });
+            const d = await res.json();
+            if (d.api_key) { revealApiKey(d.api_key); loadApiStatus(); }
+            else showToast(d.detail || 'Could not create key');
+        }
+
+        async function regenerateApiKey() {
+            if (!confirm('Your current key stops working immediately. Continue?')) return;
+            const t = document.getElementById('api-consent-toggle');
+            const res = await fetch(`${API_BASE}/api-keys/regenerate`, {
+                method: 'POST', headers: apiHeaders(),
+                body: JSON.stringify({ allow_training: t ? t.checked : false })
+            });
+            const d = await res.json();
+            if (d.api_key) { revealApiKey(d.api_key); loadApiStatus(); }
+        }
+
+        function copyApiKey() {
+            navigator.clipboard.writeText(document.getElementById('api-raw-key').textContent);
+            document.getElementById('api-copy-btn').textContent = 'Copied';
+        }
+
+        document.getElementById('settings-modal').addEventListener('click', (e) => {
+            if (e.target.id === 'settings-modal') closeSettings();
+        });
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeSettings();
+        });
+    </script>
+
 </body>
 </html>
