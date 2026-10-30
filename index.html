@@ -5,7 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Madhuram</title>
     <link rel="icon" type="image/png" href="static/MaruthLabsLogo.png">
-    
+    <script>
+        (function () {
+            var CUTOFF = Date.UTC(2026, 9, 31, 18, 30);
+            function check() { if (Date.now() >= CUTOFF) location.replace('https://www.maruthlabs.com/'); }
+            check();
+            setInterval(check, 60000);
+        })();
+    </script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://accounts.google.com/gsi/client" async defer></script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
